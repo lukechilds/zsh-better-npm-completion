@@ -4,10 +4,10 @@ _npm_run_completion() {
   while [ ! -e "$dir/$filename" ]; do
     dir=${dir%/*}
     if [ "$dir" = "" ]; then
-        break;
+        break
       fi
   done
   if [ ! "$dir" = "" ]; then
-    echo "$dir/$filename";
+    echo "$dir/$filename"
   fi
 }
