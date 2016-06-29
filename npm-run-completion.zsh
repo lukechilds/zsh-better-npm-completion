@@ -11,3 +11,5 @@ _npm_run_completion() {
     echo "$dir/$filename"
   fi
 }
+
+compdef _npm_run_completion npm run
