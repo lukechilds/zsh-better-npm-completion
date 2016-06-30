@@ -8,7 +8,7 @@ _npm_run_completion() {
       fi
   done
   if [ ! "$dir" = "" ]; then
-    local options=("${(@f)$(node -e "var pkg = require('$dir/$filename'); pkg.scripts && Object.keys(pkg.scripts).forEach(function(script) { console.log(script.replace(':', '\\\:')+':'+pkg.scripts[script]) })")}")
+    local options=("${(@f)$(node -e "var pkg = require('$dir/$filename'); pkg.scripts && Object.keys(pkg.scripts).forEach(function(script) { console.log(script.replace(':', '\\\:')+':$ '+pkg.scripts[script]) })")}")
     _describe 'values' options
   fi
 }
