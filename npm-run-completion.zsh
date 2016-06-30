@@ -8,7 +8,7 @@ _npm_run_completion() {
       fi
   done
   if [ ! "$dir" = "" ]; then
-    echo "$dir/$filename"
+    node -e "var pkg = require('$dir/$filename'); pkg.scripts && Object.keys(pkg.scripts).forEach(function(script) { console.log(script) })"
   fi
 }
 
