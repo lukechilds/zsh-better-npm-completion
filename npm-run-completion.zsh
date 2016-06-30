@@ -13,4 +13,4 @@ _npm_run_completion() {
   fi
 }
 
-compdef _npm_run_completion npm run
+compdef _npm_run_completion npm
