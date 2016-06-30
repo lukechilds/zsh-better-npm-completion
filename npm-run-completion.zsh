@@ -16,8 +16,10 @@ _npm_run_completion() {
     # If we have one, parse the scripts
     if [ ! "$dir" = "" ] && type node > /dev/null; then
       local options=("${(@f)$(node -e "var pkg = require('$dir/$filename'); pkg.scripts && Object.keys(pkg.scripts).forEach(function(script) { console.log(script.replace(':', '\\\:')+':$ '+pkg.scripts[script]) })")}")
-      _describe 'values' options
-      return
+      if [ ! "$#options" = 0 ]; then
+        _describe 'values' options
+        return
+      fi
     fi
   fi
 
