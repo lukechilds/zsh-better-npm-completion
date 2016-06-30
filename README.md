@@ -2,6 +2,8 @@
 
 > Better completion for `npm run`
 
+<img src="demo.gif" width="628">
+
 * Searches up directory tree for `package.json`
 * Shows detailed information on script contents
 * Doesn't clobber default npm completions
