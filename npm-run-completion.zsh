@@ -17,17 +17,17 @@ _npm_run_completion() {
     if [ ! "$dir" = "" ] && type node > /dev/null; then
       local options=("${(@f)$(node -e "var pkg = require('$dir/$filename'); pkg.scripts && Object.keys(pkg.scripts).forEach(function(script) { console.log(script.replace(':', '\\\:')+':$ '+pkg.scripts[script]) })")}")
       _describe 'values' options
+      return
     fi
-
-  # Fall back to default completion for all other npm commands
-  else
-    compadd -- $(COMP_CWORD=$((CURRENT-1)) \
-                COMP_LINE=$BUFFER \
-                COMP_POINT=0 \
-                npm completion -- "${words[@]}" \
-                2>/dev/null)
-    IFS=$si
   fi
+
+  # Fall back to default completion if anything above failed
+  compadd -- $(COMP_CWORD=$((CURRENT-1)) \
+              COMP_LINE=$BUFFER \
+              COMP_POINT=0 \
+              npm completion -- "${words[@]}" \
+              2>/dev/null)
+  IFS=$si
 }
 
 compdef _npm_run_completion npm
