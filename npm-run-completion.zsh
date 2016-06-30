@@ -22,10 +22,10 @@ _npm_run_completion() {
   # Fall back to default completion for all other npm commands
   else
     compadd -- $(COMP_CWORD=$((CURRENT-1)) \
-    COMP_LINE=$BUFFER \
-    COMP_POINT=0 \
-    npm completion -- "${words[@]}" \
-    2>/dev/null)
+                COMP_LINE=$BUFFER \
+                COMP_POINT=0 \
+                npm completion -- "${words[@]}" \
+                2>/dev/null)
     IFS=$si
   fi
 }
