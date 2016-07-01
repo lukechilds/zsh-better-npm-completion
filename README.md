@@ -2,7 +2,7 @@
 
 > Better completion for `npm`
 
-<img src="demo.gif" width="628">
+<img src="demo.gif" width="690">
 
 * Makes `npm install` recommendation from npm cache
 * Shows detailed information on script contents for `npm run`
