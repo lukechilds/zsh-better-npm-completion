@@ -26,16 +26,20 @@ _zbnc_npm_run_completion() {
   # Look for a package.json file
   local package_json="$(_zbnc_recursively_look_for package.json)"
 
-  # If we have one, parse the scripts
-  if [ ! "$package_json" = "" ]; then
-    local options=("${(@f)$(_zbnc_parse_package_json_for_script_suggestions "$package_json")}")
+  # Return if we can't find package.json
+  [ "$package_json" = "" ] && return
 
-    # If we successfully parse it, load the completions
-    if [ ! "$#options" = 0 ]; then
-      _describe 'values' options
-      custom_completion=true
-    fi
-  fi
+  # Parse scripts in package.json
+  local options=("${(@f)$(_zbnc_parse_package_json_for_script_suggestions "$package_json")}")
+
+  # Return if we can't parse it
+  [ "$#options" = 0 ] && return
+
+  # Load the completions
+  _describe 'values' options
+
+  # Make sure we don't run default completion
+  custom_completion=true
 }
 
 _zbnc_default_npm_completion() {
