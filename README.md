@@ -18,7 +18,7 @@ antigen bundle lukechilds/zsh-npm-run-completion
 
 ### Manual Installation
 
-Clone/download this repo and source `zsh-npm-run-completion.plugin.zsh` in your `.zshrc`.
+Clone this repo or just download `zsh-npm-run-completion.plugin.zsh` and source it in your `.zshrc`.
 
 ## License
 
