@@ -21,6 +21,22 @@ _zbnc_parse_package_json_for_script_suggestions() {
     sed 's/\(:\)[^ ]*:/\\&/'                          # Escape ":" in commands
 }
 
+_zbnc_npm_run_completion() {
+  # Look for a package.json file
+  local package_json="$(_zbnc_recursively_look_for package.json)"
+
+  # If we have one, parse the scripts
+  if [ ! "$package_json" = "" ]; then
+    local options=("${(@f)$(_zbnc_parse_package_json_for_script_suggestions "$package_json")}")
+
+    # If we successfully parse it, load the completions
+    if [ ! "$#options" = 0 ]; then
+      _describe 'values' options
+      custom_completion=true
+    fi
+  fi
+}
+
 _zbnc_default_npm_completion() {
   compadd -- $(COMP_CWORD=$((CURRENT-1)) \
               COMP_LINE=$BUFFER \
@@ -31,24 +47,18 @@ _zbnc_default_npm_completion() {
 
 _zbnc_zsh_better_npm_completion() {
 
-  # If we're on the run command
-  if [ "$(_zbnc_npm_command)" = "run" ]; then
+  # Store custom completion status
+  local custom_completion=false
 
-    # Look for a package.json file
-    local package_json="$(_zbnc_recursively_look_for package.json)"
+  # Load custom completion commands
+  case "$(_zbnc_npm_command)" in
+    run)
+      _zbnc_npm_run_completion
+      ;;
+  esac
 
-    # If we have one, parse the scripts
-    if [ ! "$package_json" = "" ]; then
-      local options=("${(@f)$(_zbnc_parse_package_json_for_script_suggestions "$package_json")}")
-      if [ ! "$#options" = 0 ]; then
-        _describe 'values' options
-        return
-      fi
-    fi
-  fi
-
-  # Fall back to default completion if anything above failed
-  _zbnc_default_npm_completion
+  # Fall back to default completion if we haven't done a custom one
+  [ $custom_completion = false ] && _zbnc_default_npm_completion
 }
 
 compdef _zbnc_zsh_better_npm_completion npm
