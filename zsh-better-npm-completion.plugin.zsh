@@ -1,4 +1,4 @@
-_npm_run_completion() {
+_zsh_better_npm_completion() {
 
   # If we're on the run command
   if [ "${words[2]}" = "run" ]; then
@@ -32,4 +32,4 @@ _npm_run_completion() {
   IFS=$si
 }
 
-compdef _npm_run_completion npm
+compdef _zsh_better_npm_completion npm

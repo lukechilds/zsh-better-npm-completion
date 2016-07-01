@@ -1,4 +1,4 @@
-# zsh-npm-run-completion
+# zsh-better-npm-completion
 
 > Better completion for `npm run`
 
@@ -13,12 +13,12 @@
 ### Antigen
 
 ```shell
-antigen bundle lukechilds/zsh-npm-run-completion
+antigen bundle lukechilds/zsh-better-npm-completion
 ```
 
 ### Manual Installation
 
-Clone this repo or just download `zsh-npm-run-completion.plugin.zsh` and source it in your `.zshrc`.
+Clone this repo or just download `zsh-better-npm-completion.plugin.zsh` and source it in your `.zshrc`.
 
 ## License
 
