@@ -22,6 +22,7 @@ _zbnc_parse_package_json_for_script_suggestions() {
 }
 
 _zbnc_npm_run_completion() {
+
   # Look for a package.json file
   local package_json="$(_zbnc_recursively_look_for package.json)"
 
