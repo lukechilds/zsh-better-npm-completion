@@ -4,7 +4,7 @@
 
 <img src="demo.gif" width="690">
 
-* Makes `npm install` recommendation from npm cache
+* Makes `npm install` recommendations from npm cache
 * Shows detailed information on script contents for `npm run`
 * Falls back to default npm completions if we don't have anything better
 
