@@ -14,8 +14,8 @@ _npm_run_completion() {
     done
 
     # If we have one, parse the scripts
-    if [ ! "$dir" = "" ] && type node > /dev/null; then
-      local options=("${(@f)$(node -e "var pkg = require('$dir/$filename'); pkg.scripts && Object.keys(pkg.scripts).forEach(function(script) { console.log(script.replace(':', '\\\:')+':$ '+pkg.scripts[script]) })")}")
+    if [ ! "$dir" = "" ]; then
+      local options=("${(@f)$(cat "$dir/$filename" | sed -nE '/^  "scripts": \{$/,/^  \},?$/p' | sed '1d;$d' | sed -E 's/    "([^"]+)": "([^"]+)",?/\1:$ \2/' | sed 's/\(:\)[^ ]*:/\\&/')}")
       if [ ! "$#options" = 0 ]; then
         _describe 'values' options
         return
