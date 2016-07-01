@@ -2,6 +2,10 @@ _zbnc_npm_command() {
   echo "${words[2]}"
 }
 
+_zbnc_no_of_npm_args() {
+  echo "$#words"
+}
+
 _zbnc_recursively_look_for() {
   local filename="$1"
   local dir=$PWD
@@ -22,6 +26,9 @@ _zbnc_parse_package_json_for_script_suggestions() {
 }
 
 _zbnc_npm_run_completion() {
+
+  # Only run on `npm run ?`
+  [ ! "$(_zbnc_no_of_npm_args)" = "3" ] && return
 
   # Look for a package.json file
   local package_json="$(_zbnc_recursively_look_for package.json)"
