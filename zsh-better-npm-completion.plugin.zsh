@@ -25,6 +25,18 @@ _zbnc_parse_package_json_for_script_suggestions() {
     sed 's/\(:\)[^ ]*:/\\&/'                          # Escape ":" in commands
 }
 
+_zbnc_npm_install_completion() {
+
+  # Only run on `npm install ?`
+  [ ! "$(_zbnc_no_of_npm_args)" = "3" ] && return
+
+  # Reccomend cached modules
+  _values $(ls ~/.npm)
+
+  # Make sure we don't run default completion
+  custom_completion=true
+}
+
 _zbnc_npm_run_completion() {
 
   # Only run on `npm run ?`
@@ -64,6 +76,9 @@ _zbnc_zsh_better_npm_completion() {
 
   # Load custom completion commands
   case "$(_zbnc_npm_command)" in
+    install)
+      _zbnc_npm_install_completion
+      ;;
     run)
       _zbnc_npm_run_completion
       ;;
