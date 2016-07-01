@@ -1,6 +1,6 @@
 # zsh-better-npm-completion
 
-> Better completion for `npm run`
+> Better completion for `npm`
 
 <img src="demo.gif" width="628">
 
