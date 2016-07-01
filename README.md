@@ -4,9 +4,9 @@
 
 <img src="demo.gif" width="628">
 
-* Searches up directory tree for `package.json`
-* Shows detailed information on script contents
-* Doesn't clobber default npm completions
+* Makes `npm install` recommendation from npm cache
+* Shows detailed information on script contents for `npm run`
+* Falls back to default npm completions if we don't have anything better
 
 ## Install
 
