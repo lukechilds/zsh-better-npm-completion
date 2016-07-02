@@ -23,11 +23,11 @@ _zbnc_recursively_look_for() {
 _zbnc_parse_package_json_for_script_suggestions() {
   local package_json="$1"
   cat "$package_json" |
-    sed -nE '/^  "scripts": \{$/,/^  \},?$/p' |       # Grab scripts object
-    sed '1d;$d' |                                     # Remove first/last lines
-    sed -E 's/    "([^"]+)": "(.+)",?/\1:$ \2/' |     # Parse commands into suggestions
-    sed 's/\(:\)[^$]/\\&/g' |                         # Escape ":" in commands
-    sed 's/\(:\)$[^ ]/\\&/g'                          # Escape ":$" without a space in commands
+    sed -nE '/^  "scripts": \{$/,/^  \},?$/p' |   # Grab scripts object
+    sed '1d;$d' |                                 # Remove first/last lines
+    sed -E 's/    "([^"]+)": "(.+)",?/\1:$ \2/' | # Parse commands into suggestions
+    sed 's/\(:\)[^$]/\\&/g' |                     # Escape ":" in commands
+    sed 's/\(:\)$[^ ]/\\&/g'                      # Escape ":$" without a space in commands
 }
 
 _zbnc_npm_install_completion() {
