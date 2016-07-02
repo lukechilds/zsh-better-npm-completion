@@ -6,6 +6,10 @@ _zbnc_no_of_npm_args() {
   echo "$#words"
 }
 
+_zbnc_list_cached_modules() {
+  ls ~/.npm
+}
+
 _zbnc_recursively_look_for() {
   local filename="$1"
   local dir=$PWD
@@ -31,8 +35,11 @@ _zbnc_npm_install_completion() {
   # Only run on `npm install ?`
   [[ ! "$(_zbnc_no_of_npm_args)" = "3" ]] && return
 
-  # Reccomend cached modules
-  _values $(ls ~/.npm)
+  # Return if we don't have any cahced modules
+  [[ "$(_zbnc_list_cached_modules)" = "" ]] && return
+
+  # If we do, reccomend them
+  _values $(_zbnc_list_cached_modules)
 
   # Make sure we don't run default completion
   custom_completion=true
