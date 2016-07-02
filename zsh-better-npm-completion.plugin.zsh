@@ -7,7 +7,7 @@ _zbnc_no_of_npm_args() {
 }
 
 _zbnc_list_cached_modules() {
-  ls ~/.npm
+  ls ~/.npm 2>/dev/null
 }
 
 _zbnc_recursively_look_for() {
