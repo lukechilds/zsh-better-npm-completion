@@ -38,7 +38,7 @@ _zbnc_npm_install_completion() {
   # Return if we don't have any cahced modules
   [[ "$(_zbnc_list_cached_modules)" = "" ]] && return
 
-  # If we do, reccomend them
+  # If we do, recommend them
   _values $(_zbnc_list_cached_modules)
 
   # Make sure we don't run default completion
