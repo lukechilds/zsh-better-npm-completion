@@ -35,7 +35,7 @@ _zbnc_npm_install_completion() {
   # Only run on `npm install ?`
   [[ ! "$(_zbnc_no_of_npm_args)" = "3" ]] && return
 
-  # Return if we don't have any cahced modules
+  # Return if we don't have any cached modules
   [[ "$(_zbnc_list_cached_modules)" = "" ]] && return
 
   # If we do, recommend them
