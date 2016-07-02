@@ -85,7 +85,7 @@ _zbnc_zsh_better_npm_completion() {
 
   # Load custom completion commands
   case "$(_zbnc_npm_command)" in
-    install)
+    i|install)
       _zbnc_npm_install_completion
       ;;
     run)
