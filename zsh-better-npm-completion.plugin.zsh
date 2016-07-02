@@ -50,7 +50,7 @@ _zbnc_npm_run_completion() {
   [ "$package_json" = "" ] && return
 
   # Parse scripts in package.json
-  local options=("${(@f)$(_zbnc_parse_package_json_for_script_suggestions $package_json)}")
+  local options=(${(f)"$(_zbnc_parse_package_json_for_script_suggestions $package_json)"})
 
   # Return if we can't parse it
   [ "$#options" = 0 ] && return
