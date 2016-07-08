@@ -8,39 +8,55 @@
 * Shows detailed information on script contents for `npm run`
 * Falls back to default npm completions if we don't have anything better
 
-## Install
+## Installation
 
-### Antigen
+### Using [Antigen](https://github.com/zsh-users/antigen)
+
+Bundle `zsh-better-npm-completion` in your `.zshrc`
 
 ```shell
 antigen bundle lukechilds/zsh-better-npm-completion
 ```
 
-### oh-my-zsh
+### Using [zplug](https://github.com/b4b4r07/zplug)
+Load `zsh-better-npm-completion` as a plugin in your `.zshrc`
 
-#### Install
+```shell
+zplug "lukechilds/zsh-better-npm-completion"
+
+```
+### Using [zgen](https://github.com/tarjoilija/zgen)
+
+Include the load command in your `.zshrc`
+
+```shell
+zgen load lukechilds/zsh-better-npm-completion
+```
+
+### As an [Oh My ZSH!](https://github.com/robbyrussell/oh-my-zsh) custom plugin
+
+Clone `zsh-better-npm-completion` into your custom plugins repo
 
 ```shell
 git clone https://github.com/lukechilds/zsh-better-npm-completion ~/.oh-my-zsh/custom/plugins/zsh-better-npm-completion
 ```
-
-#### Activate
-
-in `.zshrc`:
+Then load as a plugin in your `.zshrc`
 
 ```shell
 plugins+=(zsh-better-npm-completion)
 ```
 
-You may also need to activate completions if they aren't already on:
+### Manually
+Clone this repository somewhere (`~/zsh-better-npm-completion` for example)
 
 ```shell
-autoload -U compinit && compinit
+git clone git@github.com:lukechilds/zsh-better-npm-completion.git ~/zsh-better-npm-completion
 ```
+Then source it in your `.zshrc`
 
-### Manual Installation
-
-Clone this repo or just download `zsh-better-npm-completion.plugin.zsh` and source it in your `.zshrc`.
+```shell
+source ~/zsh-better-npm-completion/zsh-better-npm-completion.sh
+```
 
 ## License
 
