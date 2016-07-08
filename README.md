@@ -47,15 +47,15 @@ plugins+=(zsh-better-npm-completion)
 ```
 
 ### Manually
-Clone this repository somewhere (`~/zsh-better-npm-completion` for example)
+Clone this repository somewhere (`~/.zsh-better-npm-completion` for example)
 
 ```shell
-git clone git@github.com:lukechilds/zsh-better-npm-completion.git ~/zsh-better-npm-completion
+git clone https://github.com/lukechilds/zsh-better-npm-completion.git ~/.zsh-better-npm-completion
 ```
 Then source it in your `.zshrc`
 
 ```shell
-source ~/zsh-better-npm-completion/zsh-better-npm-completion.sh
+source ~/.zsh-better-npm-completion/zsh-better-npm-completion.plugin.zsh
 ```
 
 ## License
