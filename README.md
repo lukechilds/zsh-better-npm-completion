@@ -58,6 +58,10 @@ Then source it in your `.zshrc`
 source ~/.zsh-better-npm-completion/zsh-better-npm-completion.plugin.zsh
 ```
 
+## Related
+
+- [`zsh-nvm`](https://github.com/lukechilds/zsh-nvm) - Zsh plugin for installing, updating and loading `nvm`
+
 ## License
 
 MIT © Luke Childs
