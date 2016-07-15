@@ -61,6 +61,7 @@ source ~/.zsh-better-npm-completion/zsh-better-npm-completion.plugin.zsh
 ## Related
 
 - [`zsh-nvm`](https://github.com/lukechilds/zsh-nvm) - Zsh plugin for installing, updating and loading `nvm`
+- [`gifgen`](https://github.com/lukechilds/gifgen) - Simple high quality GIF encoding 
 
 ## License
 
