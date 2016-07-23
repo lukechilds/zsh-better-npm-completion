@@ -22,7 +22,7 @@ antigen bundle lukechilds/zsh-better-npm-completion
 Load `zsh-better-npm-completion` as a plugin in your `.zshrc`
 
 ```shell
-zplug "lukechilds/zsh-better-npm-completion"
+zplug "lukechilds/zsh-better-npm-completion", nice:10
 
 ```
 ### Using [zgen](https://github.com/tarjoilija/zgen)
