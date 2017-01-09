@@ -2,6 +2,10 @@ _zbnc_npm_command() {
   echo "${words[2]}"
 }
 
+_zbnc_npm_command_arg() {
+  echo "${words[3]}"
+}
+
 _zbnc_no_of_npm_args() {
   echo "$#words"
 }
@@ -65,6 +69,9 @@ _zbnc_npm_install_completion() {
 }
 
 _zbnc_npm_uninstall_completion() {
+
+  # Use default npm completion to recommend global modules
+  [[ "$(_zbnc_npm_command_arg)" = "-g" ]] ||  [[ "$(_zbnc_npm_command_arg)" = "--global" ]] && return
 
   # Look for a package.json file
   local package_json="$(_zbnc_recursively_look_for package.json)"
