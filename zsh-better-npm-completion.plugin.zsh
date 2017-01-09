@@ -30,6 +30,18 @@ _zbnc_parse_package_json_for_script_suggestions() {
     sed 's/\(:\)$[^ ]/\\&/g'                      # Escape ":$" without a space in commands
 }
 
+_zbnc_parse_package_json_for_deps() {
+  local package_json="$1"
+  cat "$package_json" |
+    sed -nE '/^  "dependencies": \{$/,/^  \},?$/p' |  # Grab scripts object
+    sed '1d;$d' |                                     # Remove first/last lines
+    sed -E 's/    "([^"]+)": "(.+)",?/\1/'            # Parse commands into suggestions
+  cat "$package_json" |
+    sed -nE '/^  "devDependencies": \{$/,/^  \},?$/p' |  # Grab scripts object
+    sed '1d;$d' |                                        # Remove first/last lines
+    sed -E 's/    "([^"]+)": "(.+)",?/\1/'               # Parse commands into suggestions
+}
+
 _zbnc_npm_install_completion() {
 
   # Only run on `npm install ?`
@@ -40,6 +52,20 @@ _zbnc_npm_install_completion() {
 
   # If we do, recommend them
   _values $(_zbnc_list_cached_modules)
+
+  # Make sure we don't run default completion
+  custom_completion=true
+}
+
+_zbnc_npm_uninstall_completion() {
+
+  # Look for a package.json file
+  local package_json="$(_zbnc_recursively_look_for package.json)"
+
+  # Return if we can't find package.json
+  [[ "$package_json" = "" ]] && return
+
+  _values $(_zbnc_parse_package_json_for_deps "$package_json")
 
   # Make sure we don't run default completion
   custom_completion=true
@@ -87,6 +113,9 @@ _zbnc_zsh_better_npm_completion() {
   case "$(_zbnc_npm_command)" in
     i|install)
       _zbnc_npm_install_completion
+      ;;
+    r|uninstall)
+      _zbnc_npm_uninstall_completion
       ;;
     run)
       _zbnc_npm_run_completion
