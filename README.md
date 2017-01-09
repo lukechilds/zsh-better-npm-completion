@@ -5,6 +5,7 @@
 <img src="demo.gif" width="690">
 
 * Makes `npm install` recommendations from npm cache
+* Makes `npm uninstall` recommendations from `dependencies`/`devDependencies`
 * Shows detailed information on script contents for `npm run`
 * Falls back to default npm completions if we don't have anything better
 
