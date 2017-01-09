@@ -20,26 +20,33 @@ _zbnc_recursively_look_for() {
   [[ ! "$dir" = "" ]] && echo "$dir/$filename"
 }
 
+_zbnc_get_package_json_property_object() {
+  local package_json="$1"
+  local property="$2"
+  cat "$package_json" |
+    sed -nE "/^  \"$property\": \{$/,/^  \},?$/p" |
+    sed '1d;$d' |
+    sed -E 's/    "([^"]+)": "(.+)",?/\1:\2/'
+}
+
+_zbnc_get_package_json_property_object_keys() {
+  local package_json="$1"
+  local property="$2"
+  _zbnc_get_package_json_property_object "$package_json" "$property" | cut -f 1 -d ":"
+}
+
 _zbnc_parse_package_json_for_script_suggestions() {
   local package_json="$1"
-  cat "$package_json" |
-    sed -nE '/^  "scripts": \{$/,/^  \},?$/p' |   # Grab scripts object
-    sed '1d;$d' |                                 # Remove first/last lines
-    sed -E 's/    "([^"]+)": "(.+)",?/\1:$ \2/' | # Parse commands into suggestions
-    sed 's/\(:\)[^$]/\\&/g' |                     # Escape ":" in commands
-    sed 's/\(:\)$[^ ]/\\&/g'                      # Escape ":$" without a space in commands
+  _zbnc_get_package_json_property_object "$package_json" scripts |
+    sed -E 's/([^:]+):(.+)/\1:$ \2/' |  # Parse commands into suggestions
+    sed 's/\(:\)[^$]/\\&/g' |           # Escape ":" in commands
+    sed 's/\(:\)$[^ ]/\\&/g'            # Escape ":$" without a space in commands
 }
 
 _zbnc_parse_package_json_for_deps() {
   local package_json="$1"
-  cat "$package_json" |
-    sed -nE '/^  "dependencies": \{$/,/^  \},?$/p' |  # Grab scripts object
-    sed '1d;$d' |                                     # Remove first/last lines
-    sed -E 's/    "([^"]+)": "(.+)",?/\1/'            # Parse commands into suggestions
-  cat "$package_json" |
-    sed -nE '/^  "devDependencies": \{$/,/^  \},?$/p' |  # Grab scripts object
-    sed '1d;$d' |                                        # Remove first/last lines
-    sed -E 's/    "([^"]+)": "(.+)",?/\1/'               # Parse commands into suggestions
+  _zbnc_get_package_json_property_object_keys "$package_json" dependencies
+  _zbnc_get_package_json_property_object_keys "$package_json" devDependencies
 }
 
 _zbnc_npm_install_completion() {
