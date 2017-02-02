@@ -30,21 +30,21 @@ _zbnc_get_package_json_property_object() {
   cat "$package_json" |
     sed -nE "/^  \"$property\": \{$/,/^  \},?$/p" | # Grab scripts object
     sed '1d;$d' |                                   # Remove first/last lines
-    sed -E 's/    "([^"]+)": "(.+)",?/\1:\2/'       # Parse into key:value
+    sed -E 's/    "([^"]+)": "(.+)",?/\1=>\2/'      # Parse into key=>value
 }
 
 _zbnc_get_package_json_property_object_keys() {
   local package_json="$1"
   local property="$2"
-  _zbnc_get_package_json_property_object "$package_json" "$property" | cut -f 1 -d ":"
+  _zbnc_get_package_json_property_object "$package_json" "$property" | cut -f 1 -d "="
 }
 
 _zbnc_parse_package_json_for_script_suggestions() {
   local package_json="$1"
   _zbnc_get_package_json_property_object "$package_json" scripts |
-    sed -E 's/([^:]+):(.+)/\1:$ \2/' |  # Parse commands into suggestions
-    sed 's/\(:\)[^$]/\\&/g' |           # Escape ":" in commands
-    sed 's/\(:\)$[^ ]/\\&/g'            # Escape ":$" without a space in commands
+    sed -E 's/(.+)=>(.+)/\1:$ \2/' |  # Parse commands into suggestions
+    sed 's/\(:\)[^$]/\\&/g' |         # Escape ":" in commands
+    sed 's/\(:\)$[^ ]/\\&/g'          # Escape ":$" without a space in commands
 }
 
 _zbnc_parse_package_json_for_deps() {
