@@ -1,13 +1,12 @@
-# zsh-better-npm-completion
+# yarn-completion
 
-> Better completion for `npm`
+This plugin is a fork of [zsh-better-npm-completion](https://github.com/lukechilds/zsh-better-npm-completion). It works the same way, as you can see with `npm` demo:
 
 <img src="demo.gif" width="690">
 
-* Makes `npm install` recommendations from npm cache
-* Makes `npm uninstall` recommendations from `dependencies`/`devDependencies`
+* Makes `yarn add` recommendations from npm cache
+* Makes `yarn remove` recommendations from `dependencies`/`devDependencies`
 * Shows detailed information on script contents for `npm run`
-* Falls back to default npm completions if we don't have anything better
 
 ## Installation
 
@@ -16,14 +15,14 @@
 Bundle `zsh-better-npm-completion` in your `.zshrc`
 
 ```shell
-antigen bundle lukechilds/zsh-better-npm-completion
+antigen bundle buonomo/yarn-completion
 ```
 
 ### Using [zplug](https://github.com/b4b4r07/zplug)
 Load `zsh-better-npm-completion` as a plugin in your `.zshrc`
 
 ```shell
-zplug "lukechilds/zsh-better-npm-completion", nice:10
+zplug "buonomo/yarn-completion", nice:10
 
 ```
 ### Using [zgen](https://github.com/tarjoilija/zgen)
@@ -31,39 +30,34 @@ zplug "lukechilds/zsh-better-npm-completion", nice:10
 Include the load command in your `.zshrc`
 
 ```shell
-zgen load lukechilds/zsh-better-npm-completion
+zgen load buonomo/yarn-completion
 ```
 
 ### As an [Oh My ZSH!](https://github.com/robbyrussell/oh-my-zsh) custom plugin
 
-Clone `zsh-better-npm-completion` into your custom plugins repo
+Clone `yarn-completion` into your custom plugins repo
 
 ```shell
-git clone https://github.com/lukechilds/zsh-better-npm-completion ~/.oh-my-zsh/custom/plugins/zsh-better-npm-completion
+git clone https://github.com/buonomo/yarn-completion ~/.oh-my-zsh/custom/plugins/yarn-completion
 ```
 Then load as a plugin in your `.zshrc`
 
 ```shell
-plugins+=(zsh-better-npm-completion)
+plugins+=(yarn-completion)
 ```
 
 ### Manually
-Clone this repository somewhere (`~/.zsh-better-npm-completion` for example)
+Clone this repository somewhere (`~/.yarn-completion` for example)
 
 ```shell
-git clone https://github.com/lukechilds/zsh-better-npm-completion.git ~/.zsh-better-npm-completion
+git clone https://github.com/buonomo/yarn-completion.git ~/.yarn-completion
 ```
 Then source it in your `.zshrc`
 
 ```shell
-source ~/.zsh-better-npm-completion/zsh-better-npm-completion.plugin.zsh
+source ~/.yarn-completion/yarn-completion.plugin.zsh
 ```
-
-## Related
-
-- [`zsh-nvm`](https://github.com/lukechilds/zsh-nvm) - Zsh plugin for installing, updating and loading `nvm`
-- [`gifgen`](https://github.com/lukechilds/gifgen) - Simple high quality GIF encoding 
 
 ## License
 
-MIT © Luke Childs
+MIT © Ulysse Buonomo
