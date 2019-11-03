@@ -28,7 +28,7 @@ _yc_get_package_json_property_object() {
   local package_json="$1"
   local property="$2"
   cat "$package_json" |
-    sed -nE "/^  \"$property\": \{$/,/^  \},?$/p" | # Grab scripts object
+    sed -nE "/^ *\"$property\": \{$/,/^ *\},?$/p" | # Grab scripts object
     sed '1d;$d' |                                   # Remove first/last lines
     sed -E 's/    "([^"]+)": "(.+)",?/\1=>\2/'      # Parse into key=>value
 }
