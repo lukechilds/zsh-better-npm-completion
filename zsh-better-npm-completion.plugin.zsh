@@ -11,7 +11,56 @@ _zbnc_no_of_npm_args() {
 }
 
 _zbnc_list_cached_modules() {
-  ls --color=never ~/.npm 2>/dev/null
+  local update_policy
+  zstyle -s ":completion:${curcontext}:" cache-policy update_policy
+  if [[ -z "$update_policy" ]]; then
+    zstyle ":completion:${curcontext}:" cache-policy _zbnc_list_cached_modules_policy
+  fi
+
+  if _cache_invalid zbnc_cached_modules  || ! _retrieve_cache zbnc_cached_modules; then
+    _modules=$(_zbnc_list_cached_modules_no_cache)
+
+    if [ $? -eq 0 ]; then
+      _store_cache zbnc_cached_modules _modules
+    else
+      # some error occurred, the user is probably not logged in
+      # set _modules to an empty string so that no completion is attempted
+      _modules=""
+    fi
+  else
+    _retrieve_cache zbnc_cached_modules
+  fi
+  echo $_modules
+}
+
+_zbnc_list_cached_modules_policy() {
+  # rebuild if cache is more than an hour old
+  local -a oldp
+  # See http://zsh.sourceforge.net/Doc/Release/Expansion.html#Glob-Qualifiers
+  oldp=( "$1"(Nmh+1) )
+  (( $#oldp ))
+}
+
+_zbnc_list_cached_modules_no_cache() {
+  local cache_dir="$(npm config get cache)/_cacache"
+  export NODE_PATH="${NODE_PATH}:$(npm prefix -g)/lib/node_modules"
+  node --eval="require('cacache');" &>/dev/null || npm install -g cacache &>/dev/null
+  if [ -d "${cache_dir}" ]; then
+    node <<CACHE_LS 2>/dev/null
+const cacache = require('cacache');
+cacache.ls('${cache_dir}').then(cache => {
+    const packages = Object.values(cache).forEach(entry => {
+        const id = ((entry || {}).metadata || {}).id;
+        if (id) {
+            console.log(id.substr(0, id.lastIndexOf('@')));
+        }
+    });
+});
+CACHE_LS
+  else
+    # Fallback to older cache location ... i think node < 10
+    ls --color=never ~/.npm 2>/dev/null
+  fi
 }
 
 _zbnc_recursively_look_for() {
