@@ -61,17 +61,19 @@ source ~/.zsh-better-npm-completion/zsh-better-npm-completion.plugin.zsh
 
 ## Module Install Cache
 
-When running `npm install <tab>`, it will look in your local npm cache directory for package suggestions. 
-However building this list is still relatively slow. This completion makes use of the zsh completion
-caching mechanism to cache the module list if you have caching enabled.
+When running `npm install rea<tab>`, it will perform an `npm search` for matching packages. In addition
+it will look in your local npm cache directory for package suggestions. However building this list
+can be pretty slow. This completion makes use of the zsh completion caching mechanism to cache the
+module list if you have caching enabled. 
 
-Caching can be enabled for all completions like this:
+We try to enable it by default, however if you have something
+like below in your zshrc forces cache for all completions to be turned off.
 
 ```zsh
-zstyle ':completion:*' use-cache on
+zstyle ':completion:*' use-cache off
 ```
 
-Or specifically for the npm completion like this:
+To specifically turn npm cache back on, you may add the following:
 
 ```zsh
 zstyle ':completion::complete:npm::' use-cache on
