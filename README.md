@@ -39,7 +39,7 @@ zgen load lukechilds/zsh-better-npm-completion
 Clone `zsh-better-npm-completion` into your custom plugins repo
 
 ```shell
-git clone https://github.com/lukechilds/zsh-better-npm-completion ~/.oh-my-zsh/custom/plugins/zsh-better-npm-completion
+git clone https://github.com/lukechilds/zsh-better-npm-completion $ZSH_CUSTOM/plugins/zsh-better-npm-completion
 ```
 Then load as a plugin in your `.zshrc`
 
