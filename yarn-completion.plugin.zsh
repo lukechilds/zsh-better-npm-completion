@@ -1,4 +1,4 @@
-sed -E 's/\s+"([^"]+)": "(.+)",?/\1=>\2/'_yc_yarn_command() {
+_yc_yarn_command() {
   echo "${words[2]}"
 }
 
