@@ -1,0 +1,15 @@
+#!/usr/bin/env zsh
+
+# Use default npm completion to recommend global modules
+[[ "$(zbnc_npm_command_arg)" = "-g" ]] ||  [[ "$(zbnc_npm_command_arg)" = "--global" ]] && return
+
+# Look for a package.json file
+local package_json="$(zbnc_recursively_look_for package.json)"
+
+# Return if we can't find package.json
+[[ "$package_json" = "" ]] && return
+
+_values $(zbnc_parse_package_json_for_deps "$package_json")
+
+# Make sure we don't run default completion
+custom_completion=true

@@ -1,0 +1,23 @@
+#!/usr/bin/env zsh
+
+# Only run on `npm run ?`
+[[ ! "$(zbnc_no_of_npm_args)" = "3" ]] && return
+
+# Look for a package.json file
+local package_json="$(zbnc_recursively_look_for package.json)"
+
+# Return if we can't find package.json
+[[ "$package_json" = "" ]] && return
+
+# Parse scripts in package.json
+local -a options
+options=(${(f)"$(zbnc_parse_package_json_for_script_suggestions $package_json)"})
+
+# Return if we can't parse it
+[[ "$#options" = 0 ]] && return
+
+# Load the completions
+_describe 'values' options
+
+# Make sure we don't run default completion
+custom_completion=true

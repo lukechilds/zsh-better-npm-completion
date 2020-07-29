@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+
+local package_json="$1"
+zbnc_get_package_json_property_object "$package_json" scripts |
+sed -E 's/(.+)=>(.+)/\1:$ \2/' |  # Parse commands into suggestions
+sed 's/\(:\)[^$]/\\&/g' |         # Escape ":" in commands
+sed 's/\(:\)$[^ ]/\\&/g'          # Escape ":$" without a space in commands

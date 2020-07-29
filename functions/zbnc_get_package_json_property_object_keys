@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+local package_json="$1"
+local property="$2"
+zbnc_get_package_json_property_object "$package_json" "$property" | cut -f 1 -d "="

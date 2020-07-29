@@ -1,0 +1,5 @@
+#!/usr/bin/env zsh
+
+local package_json="$1"
+zbnc_get_package_json_property_object_keys "$package_json" dependencies
+zbnc_get_package_json_property_object_keys "$package_json" devDependencies

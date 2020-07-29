@@ -1,0 +1,9 @@
+#!/usr/bin/env zsh
+
+local filename="$1"
+local dir=$PWD
+while [ ! -e "$dir/$filename" ]; do
+  dir=${dir%/*}
+  [[ "$dir" = "" ]] && break
+done
+[[ ! "$dir" = "" ]] && echo "$dir/$filename"
