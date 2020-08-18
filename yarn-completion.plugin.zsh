@@ -30,7 +30,7 @@ _yc_get_package_json_property_object() {
   cat "$package_json" |
     sed -nE "/^ *\"$property\": \{$/,/^ *\},?$/p" | # Grab scripts object
     sed '1d;$d' |                                   # Remove first/last lines
-    sed -E 's/    "([^"]+)": "(.+)",?/\1=>\2/'      # Parse into key=>value
+    sed -E 's/\s+"([^"]+)": "(.+)",?/\1=>\2/'      # Parse into key=>value
 }
 
 _yc_get_package_json_property_object_keys() {
