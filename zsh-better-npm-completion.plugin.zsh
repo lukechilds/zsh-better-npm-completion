@@ -21,7 +21,10 @@ autoload -Uz \
   zbnc_parse_package_json_for_deps  \
   zbnc_parse_package_json_for_script_suggestions  \
   zbnc_recursively_look_for  \
-  zbnc_zsh_better_npm_completion
+  zbnc_zsh_better_npm_completion \
+  zbnc_zsh_better_npm_completion_npx \
+  zbnc_npx_list_excuteables
 
 
 compdef zbnc_zsh_better_npm_completion npm
+compdef zbnc_zsh_better_npm_completion_npx npx
