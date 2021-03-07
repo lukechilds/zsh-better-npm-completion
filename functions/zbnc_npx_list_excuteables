@@ -3,7 +3,7 @@ local node_modules="$(dirname package_json)/node_modules"
 local bindir="$node_modules/.bin"
 
 # Return if there's no node_modules
-[[ ! -e "$node_modules" ]] && return
+[[ ! -e "$node_modules" ]] && return>
 
 # Return if there's no .bin in node_modules
 [[ ! -e "$bindir" ]] && return
