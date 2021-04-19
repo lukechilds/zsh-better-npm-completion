@@ -23,8 +23,7 @@ autoload -Uz \
   zbnc_recursively_look_for  \
   zbnc_zsh_better_npm_completion \
   zbnc_zsh_better_npm_completion_npx \
-  zbnc_npx_list_excuteables
-
+  zbnc_npx_list_executables
 
 compdef zbnc_zsh_better_npm_completion npm
 compdef zbnc_zsh_better_npm_completion_npx npx
