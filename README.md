@@ -22,7 +22,7 @@ antigen bundle buonomo/yarn-completion
 Load `zsh-better-npm-completion` as a plugin in your `.zshrc`
 
 ```shell
-zplug "buonomo/yarn-completion", nice:10
+zplug "buonomo/yarn-completion", defer:2
 
 ```
 ### Using [zgen](https://github.com/tarjoilija/zgen)
