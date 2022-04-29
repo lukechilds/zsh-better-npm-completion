@@ -103,7 +103,7 @@ _yc_yarn_run_completion() {
 
 _yc_yarn_commands_completion() {
   _values \
-    'subcommnad' \
+    'subcommand' \
       'add[Installs a package and any packages that it depends on.]' \
       'bin[Displays the location of the yarn bin folder.]' \
       'cache[Yarn stores every package in a global cache in your user directory on the file system.]' \
