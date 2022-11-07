@@ -10,8 +10,8 @@ _yc_no_of_yarn_args() {
   echo "$#words"
 }
 
-_yc_list_cached_modules() {
-  ls ~/.npm 2>/dev/null
+_yc_check_jq() {
+  (( ${+commands[jq]} )) || echo "\nyarn-completion needs jq\n"
 }
 
 _yc_recursively_look_for() {
@@ -24,47 +24,17 @@ _yc_recursively_look_for() {
   [[ ! "$dir" = "" ]] && echo "$dir/$filename"
 }
 
-_yc_get_package_json_property_object() {
-  local package_json="$1"
-  local property="$2"
-  cat "$package_json" |
-    sed -nE "/^ *\"$property\": \{$/,/^ *\},?$/p" | # Grab scripts object
-    sed '1d;$d' |                                   # Remove first/last lines
-    sed -E 's/\s+"([^"]+)": "(.+)",?/\1=>\2/'      # Parse into key=>value
-}
-
-_yc_get_package_json_property_object_keys() {
-  local package_json="$1"
-  local property="$2"
-  _yc_get_package_json_property_object "$package_json" "$property" | cut -f 1 -d "="
-}
-
-_yc_parse_package_json_for_script_suggestions() {
-  local package_json="$1"
-  _yc_get_package_json_property_object "$package_json" scripts |
-    sed -E 's/(.+)=>(.+)/\1:$ \2/' |  # Parse commands into suggestions
-    sed 's/\(:\)[^$]/\\&/g' |         # Escape ":" in commands
-    sed 's/\(:\)$[^ ]/\\&/g'          # Escape ":$" without a space in commands
-}
-
-_yc_parse_package_json_for_deps() {
-  local package_json="$1"
-  _yc_get_package_json_property_object_keys "$package_json" dependencies
-  _yc_get_package_json_property_object_keys "$package_json" devDependencies
-}
-
 _yc_yarn_add_completion() {
   # Only run on `yarn add ?`
   [[ ! "$(_yc_no_of_yarn_args)" = "3" ]] && return
 
+  local packages=($(yarn cache list --json | jq --raw-output '.data.body[] | .[0]' 2> /dev/null))
+
   # Return if we don't have any cached modules
-  [[ "$(_yc_list_cached_modules)" = "" ]] && return
+  [[ "$#packages" = 0 ]] && return
 
   # If we do, recommend them
-  _values $(_yc_list_cached_modules)
-
-  # Make sure we don't run default completion
-  custom_completion=true
+  _values 'packages' $packages
 }
 
 _yc_yarn_remove_completion() {
@@ -77,7 +47,11 @@ _yc_yarn_remove_completion() {
   # Return if we can't find package.json
   [[ "$package_json" = "" ]] && return
 
-  _values $(_yc_parse_package_json_for_deps "$package_json")
+  local values=($(jq --raw-output '(.devDependencies, .dependencies) | keys[]' $package_json 2> /dev/null))
+
+  [[ "$#values" = 0 ]] && return
+
+  _values 'installed' $values
 }
 
 _yc_yarn_run_completion() {
@@ -90,15 +64,16 @@ _yc_yarn_run_completion() {
   # Return if we can't find package.json
   [[ "$package_json" = "" ]] && return
 
-  # Parse scripts in package.json
-  local -a options
-  options=(${(f)"$(_yc_parse_package_json_for_script_suggestions $package_json)"})
+  local -a scripts
+  scripts=(${(f)"$(
+      jq --raw-output '
+      .scripts | to_entries[] | "\(.key):\(.value | gsub("\n";"\\\\n"))"
+    ' $package_json 2> /dev/null
+  )"})
 
-  # Return if we can't parse it
-  [[ "$#options" = 0 ]] && return
+  [[ "$#scripts" = 0 ]] && return
 
-  # Load the completions
-  _describe 'values' options
+  _describe 'scripts' scripts
 }
 
 _yc_zsh_better_yarn_completion() {
@@ -108,12 +83,15 @@ _yc_zsh_better_yarn_completion() {
   # Load custom completion commands
   case "$(_yc_yarn_command)" in
     add)
+      _yc_check_jq
       _yc_yarn_add_completion
       ;;
     remove)
+      _yc_check_jq
       _yc_yarn_remove_completion
       ;;
     run)
+      _yc_check_jq
       _yc_yarn_run_completion
       ;;
     *)
