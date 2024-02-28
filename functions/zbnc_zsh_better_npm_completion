@@ -1,0 +1,20 @@
+#!/usr/bin/env zsh
+
+# Store custom completion status
+local custom_completion=false
+
+# Load custom completion commands
+case "$(zbnc_npm_command)" in
+  i|install)
+    zbnc_npm_install_completion
+    ;;
+  r|uninstall)
+    zbnc_npm_uninstall_completion
+    ;;
+  run)
+    zbnc_npm_run_completion
+    ;;
+esac
+
+# Fall back to default completion if we haven't done a custom one
+[[ $custom_completion = false ]] && zbnc_default_npm_completion

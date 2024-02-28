@@ -1,0 +1,9 @@
+local package_json="$(zbnc_recursively_look_for package.json)"
+
+# Return if we can't find package.json
+[[ "$package_json" = "" ]] && return
+
+_values $(zbnc_npx_list_executables "$package_json")
+
+# Make sure we don't run default completion
+custom_completion=true

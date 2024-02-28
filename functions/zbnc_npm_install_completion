@@ -1,0 +1,13 @@
+#!/usr/bin/env zsh
+
+# Only run on `npm install ?`
+[[ ! "$(zbnc_no_of_npm_args)" = "3" ]] && return
+
+# Return if we don't have any cached modules
+[[ "$(zbnc_list_cached_modules)" = "" ]] && return
+
+# If we do, recommend them
+_values $(zbnc_list_cached_modules)
+
+# Make sure we don't run default completion
+custom_completion=true
