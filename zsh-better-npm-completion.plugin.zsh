@@ -141,3 +141,35 @@ _zbnc_zsh_better_npm_completion() {
 }
 
 compdef _zbnc_zsh_better_npm_completion npm
+
+# npx completions
+
+_zbnc_npx_list_excuteables() {
+    local package_json="$1"
+    local node_modules="$(dirname package_json)/node_modules"
+    local bindir="$node_modules/.bin"
+
+    # Return if there's no node_modules
+    [[ ! -e "$node_modules" ]] && return
+
+    # Return if there's no .bin in node_modules
+    [[ ! -e "$bindir" ]] && return
+
+    ls $bindir 2>/dev/null
+}
+
+_zbnc_zsh_better_npm_completion_npx() {
+
+    local package_json="$(_zbnc_recursively_look_for package.json)"
+
+    # Return if we can't find package.json
+    [[ "$package_json" = "" ]] && return
+
+    _values $(_zbnc_npx_list_excuteables "$package_json")
+
+    # Make sure we don't run default completion
+    custom_completion=true
+
+}
+
+compdef _zbnc_zsh_better_npm_completion_npx npx
