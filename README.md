@@ -63,6 +63,41 @@ Then source it in your `.zshrc`
 source ~/.zsh-better-npm-completion/zsh-better-npm-completion.plugin.zsh
 ```
 
+## Module Install Cache
+
+When running `npm install rea<tab>`, it will perform an `npm search` for matching packages. In addition
+it will look in your local npm cache directory for package suggestions. However building this list
+can be pretty slow. This completion makes use of the zsh completion caching mechanism to cache the
+module list if you have caching enabled. 
+
+We try to enable it by default, however if you have something
+like below in your zshrc forces cache for all completions to be turned off.
+
+```zsh
+zstyle ':completion:*' use-cache off
+```
+
+To specifically turn npm cache back on, you may add the following:
+
+```zsh
+zstyle ':completion::complete:npm::' use-cache on
+```
+
+By default the cache will be valid for 1 hour. But can be modified by setting a cache policy like this:
+
+```zsh
+_npm_install_cache_policy() {
+  # rebuild if cache is more than 24 hours old
+  local -a oldp
+  # See http://zsh.sourceforge.net/Doc/Release/Expansion.html#Glob-Qualifiers
+  # Nmh+24 ... N == NULL_GLOB, m == modified time, h == hour, +24 == +24 units (i.e. [M]onth, [w]weeks, [h]ours, [m]inutes, [s]econds)
+  oldp=( "$1"(Nmh+24) )
+  (( $#oldp ))
+}
+zstyle ':completion::complete:npm::' cache-policy _npm_install_cache_policy
+```
+
+
 ## Related
 
 - [`zsh-nvm`](https://github.com/lukechilds/zsh-nvm) - Zsh plugin for installing, updating and loading `nvm`

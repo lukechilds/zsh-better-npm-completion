@@ -11,7 +11,84 @@ _zbnc_no_of_npm_args() {
 }
 
 _zbnc_list_cached_modules() {
-  ls ~/.npm 2>/dev/null
+  local term="${words[$CURRENT]}"
+  
+  case $term in
+    '.'* | '/'* | '~'* | '-'* | '_'*)
+      return
+  esac
+
+  # enable cache if the user hasn't explicitly set it
+  local use_cache
+  zstyle -s ":completion:${curcontext}:" use-cache use_cache
+  if [[ -z "$use_cache" ]]; then
+    zstyle ":completion:${curcontext}:" use-cache on
+  fi
+
+  # set default cache policy if the user hasn't set it
+  local update_policy
+  zstyle -s ":completion:${curcontext}:" cache-policy update_policy
+  if [[ -z "$update_policy" ]]; then
+    zstyle ":completion:${curcontext}:" cache-policy _zbnc_list_cached_modules_policy
+  fi
+
+  local hash=$(echo "$term" | md5)
+  cache_name="zbnc_cached_modules_$hash"
+
+  if _cache_invalid $cache_name  || ! _retrieve_cache $cache_name; then
+    if [[ -z "$term" ]]; then
+      _modules=$(_zbnc_list_cached_modules_no_cache)
+    else
+      _modules=$(_zbnc_list_search_modules)
+    fi
+
+    if [ $? -eq 0 ]; then
+      _store_cache $cache_name _modules
+    else
+      # some error occurred, the user is probably not logged in
+      # set _modules to an empty string so that no completion is attempted
+      _modules=""
+    fi
+  else
+    _retrieve_cache $cache_name
+  fi
+  echo $_modules
+}
+
+_zbnc_list_cached_modules_policy() {
+  # rebuild if cache is more than an hour old
+  local -a oldp
+  # See http://zsh.sourceforge.net/Doc/Release/Expansion.html#Glob-Qualifiers
+  oldp=( "$1"(Nmh+1) )
+  (( $#oldp ))
+}
+
+_zbnc_list_search_modules() {
+  local term="${words[$CURRENT]}"
+  [[ ! -z "$term" ]] && NPM_CONFIG_SEARCHLIMIT=1000 npm search --no-description --parseable "$term" 2>/dev/null | awk '{print $1}'
+  _zbnc_list_cached_modules_no_cache
+}
+
+_zbnc_list_cached_modules_no_cache() {
+  local cache_dir="$(npm config get cache)/_cacache"
+  export NODE_PATH="${NODE_PATH}:$(npm prefix -g)/lib/node_modules:$(npm prefix -g)/lib/node_modules/npm/node_modules"
+  node --eval="require('cacache');" &>/dev/null || npm install -g cacache &>/dev/null
+  if [ -d "${cache_dir}" ]; then
+    node <<CACHE_LS 2>/dev/null
+const cacache = require('cacache');
+cacache.ls('${cache_dir}').then(cache => {
+    const packages = Object.values(cache).forEach(entry => {
+        const id = ((entry || {}).metadata || {}).id;
+        if (id) {
+            console.log(id.substr(0, id.lastIndexOf('@')));
+        }
+    });
+});
+CACHE_LS
+  else
+    # Fallback to older cache location ... i think node < 10
+    ls --color=never ~/.npm 2>/dev/null
+  fi
 }
 
 _zbnc_recursively_look_for() {
@@ -56,13 +133,15 @@ _zbnc_parse_package_json_for_deps() {
 _zbnc_npm_install_completion() {
 
   # Only run on `npm install ?`
-  [[ ! "$(_zbnc_no_of_npm_args)" = "3" ]] && return
+  [[ $(_zbnc_no_of_npm_args) -lt 3 ]] && return
 
-  # Return if we don't have any cached modules
-  [[ "$(_zbnc_list_cached_modules)" = "" ]] && return
+  local modules=($(_zbnc_list_cached_modules))
+  
+  # Add modules if we found some
+  [[ ${#modules[@]} -gt 0 ]] && _values $modules
 
-  # If we do, recommend them
-  _values $(_zbnc_list_cached_modules)
+  # Include local files
+  _files
 
   # Make sure we don't run default completion
   custom_completion=true
@@ -119,17 +198,34 @@ _zbnc_default_npm_completion() {
 }
 
 _zbnc_zsh_better_npm_completion() {
-
   # Store custom completion status
   local custom_completion=false
 
   # Load custom completion commands
   case "$(_zbnc_npm_command)" in
-    i|install)
-      _zbnc_npm_install_completion
+    i|install|add)
+      _arguments -n -C \
+        '(-g --global)'{-g,--global}'[Package will be installed as a global package.]' \
+        '(-P --save-prod -D --save-dev -O --save-optional --no-save)'{-P,--save-prod}'[Package will appear in your dependencies. This is the default unless -D or -O are present.]' \
+        '(-D --save-dev -P --save-prod -O --save-optional --no-save)'{-D,--save-dev}'[Package will appear in your devDependencies.]' \
+        '(-O --save-optional -P --save-prod -D --save-dev --no-save)'{-O,--save-optional}'[Package will appear in your optionalDependencies.]' \
+        '(--no-save -P --save-prod -D --save-dev -O --save-optional -E --save-exact -B --save-bundle)--no-save[Prevents saving to dependencies.]' \
+        '(-E --save-exact --no-save)'{-E,--save-exact}'[Saved dependencies will be configured with an exact version rather than using npm’s default semver range operator.]' \
+        '(-B --save-bundle --no-save)'{-B,--save-bundle}'[Saved dependencies will also be added to your bundleDependencies list.]' \
+        '(- *)--help[show help message.]' \
+        "(- *)--version[show program's version number and exit.]" \
+        '*:args:_zbnc_npm_install_completion' && return 0
       ;;
-    r|uninstall)
-      _zbnc_npm_uninstall_completion
+    r|uninstall|remove|rm|un|unlink)
+      _arguments -n -C \
+        '(-g --global)'{-g,--global}'[Package will be removed from global packages.]' \
+        '(-P --save-prod -D --save-dev -O --save-optional --no-save)'{-P,--save-prod}'[Package will be removed from your dependencies.]' \
+        '(-D --save-dev -P --save-prod -O --save-optional --no-save)'{-D,--save-dev}'[Package will be removed from your devDependencies.]' \
+        '(-O --save-optional -P --save-prod -D --save-dev --no-save)'{-O,--save-optional}'[Package will be removed from your optionalDependencies.]' \
+        '(--no-save -P --save-prod -D --save-dev -O --save-optional)--no-save[Package will not be removed from your package.json file.]' \
+        '(- *)--help[show help message.]' \
+        "(- *)--version[show program's version number and exit.]" \
+        '*:args:_zbnc_npm_uninstall_completion' && return 0
       ;;
     run)
       _zbnc_npm_run_completion
